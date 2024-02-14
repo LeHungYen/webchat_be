@@ -14,14 +14,17 @@ public class NotificationVO implements Serializable {
     @NotNull(message = "notificationId can not null")
     private Integer notificationId;
 
-    @NotNull(message = "userId can not null")
-    private Integer userId;
+    @NotNull(message = "senderId can not null")
+    private Integer senderId;
+
+    @NotNull(message = "receiverId can not null")
+    private Integer receiverId;
 
     private String type;
 
     private String link;
 
-    private Integer isRead;
+    private boolean isRead;
 
     private Date createdAt;
 

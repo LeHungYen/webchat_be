@@ -1,5 +1,6 @@
 package com.webchat.webchat_be.vo;
 
+import com.webchat.webchat_be.enums.FriendRequestStatus;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

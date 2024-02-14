@@ -3,15 +3,10 @@ package com.webchat.webchat_be.controller;
 import com.webchat.webchat_be.dto.UserfollowingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.webchat.webchat_be.service.UserfollowingService;
 import com.webchat.webchat_be.vo.UserfollowingQueryVO;
 import com.webchat.webchat_be.vo.UserfollowingUpdateVO;
@@ -28,11 +23,13 @@ public class UserfollowingController {
     @Autowired
     private UserfollowingService userfollowingService;
 
+    @CrossOrigin
     @PostMapping
     public String save(@Valid @RequestBody UserfollowingVO vO) {
         return userfollowingService.save(vO).toString();
     }
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public void delete(@Valid @NotNull @PathVariable("id") Integer id) {
         userfollowingService.delete(id);
@@ -52,5 +49,16 @@ public class UserfollowingController {
     @GetMapping
     public Page<UserfollowingDTO> query(@Valid UserfollowingQueryVO vO) {
         return userfollowingService.query(vO);
+    }
+
+    @CrossOrigin
+    @GetMapping("/findByUserIdAndFollowingUserId")
+    public ResponseEntity<?> findByUserIdAndFollowingUserId(@RequestParam("userId") int userId , @RequestParam("followingUserId") int followingUserId){
+        UserfollowingDTO userfollowingDTO = userfollowingService.findByUserIdAndFollowingUserId(userId , followingUserId);
+        if(userfollowingDTO == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("UserFollowing not found");
+        }else{
+            return ResponseEntity.ok(userfollowingDTO);
+        }
     }
 }

@@ -25,10 +25,10 @@ public class Friendship implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer friendshipId;
 
-    @Column(name = "userId1", insertable=false, updatable=false)
+    @Column(name = "userId1")
     private Integer userId1;
 
-    @Column(name = "userId2", insertable=false, updatable=false)
+    @Column(name = "userId2")
     private Integer userId2;
 
     @Column(name = "status")
@@ -41,11 +41,11 @@ public class Friendship implements Serializable {
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "userId1" , referencedColumnName = "userId")
+    @JoinColumn(name = "userId1" , referencedColumnName = "userId" , insertable=false, updatable=false)
     private User user1;
 
     @ManyToOne
-    @JoinColumn(name = "userId2" , referencedColumnName = "userId")
+    @JoinColumn(name = "userId2" , referencedColumnName = "userId" , insertable=false, updatable=false)
     private User user2;
 
 }

@@ -1,17 +1,17 @@
 package com.webchat.webchat_be.controller;
 
 import com.webchat.webchat_be.dto.NotificationDTO;
+import com.webchat.webchat_be.dto.UserDTO;
+import com.webchat.webchat_be.utilities.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.webchat.webchat_be.service.NotificationService;
 import com.webchat.webchat_be.vo.NotificationQueryVO;
 import com.webchat.webchat_be.vo.NotificationUpdateVO;
@@ -53,4 +53,31 @@ public class NotificationController {
     public Page<NotificationDTO> query(@Valid NotificationQueryVO vO) {
         return notificationService.query(vO);
     }
+
+
+    @MessageMapping("/notification")
+    @SendTo("/topic/notification")
+    public NotificationDTO sendNotification(@Payload NotificationVO vO){
+        NotificationDTO notificationDTO = notificationService.save(vO);
+        return notificationDTO;
+    }
+
+    @CrossOrigin
+    @GetMapping("/getNotifications")
+    public ResponseEntity<?> getNotifications (){
+        return ResponseEntity.ok(notificationService.getNotifications());
+    }
+
+//    SimpMessagingTemplate simpMessagingTemplate ;
+//    @MessageMapping("/notification")
+////    @SendTo("/topic/notification")
+//    public void sendNotification(@Payload NotificationVO vO){
+//        NotificationDTO notificationDTO = notificationService.save(vO);
+//        UserDTO userDTO = Utilities.getUserDTOFromContext();
+//        if(notificationDTO.getReceiverId()  == userDTO.getUserId()){
+//
+//            simpMessagingTemplate.convertAndSend("/topic/notification" , notificationDTO);
+//        }
+//    }
+
 }

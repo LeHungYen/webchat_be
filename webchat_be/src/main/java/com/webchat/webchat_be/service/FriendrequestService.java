@@ -11,6 +11,7 @@ import com.webchat.webchat_be.vo.FriendrequestQueryVO;
 import com.webchat.webchat_be.vo.FriendrequestUpdateVO;
 import com.webchat.webchat_be.vo.FriendrequestVO;
 
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 @Service
@@ -22,6 +23,7 @@ public class FriendrequestService {
     public Integer save(FriendrequestVO vO) {
         Friendrequest bean = new Friendrequest();
         BeanUtils.copyProperties(vO, bean);
+        bean.setCreatedAt(new Date());
         bean = friendrequestRepository.save(bean);
         return bean.getRequestId();
     }
@@ -54,5 +56,17 @@ public class FriendrequestService {
     private Friendrequest requireOne(Integer id) {
         return friendrequestRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Resource not found: " + id));
+    }
+
+    public FriendrequestDTO getBySenderIdAndReceiveId (int senderId , int receiverId){
+        Friendrequest friendrequest = friendrequestRepository.findBySenderUserIdAndReceiverUserId(senderId , receiverId);
+
+        if(friendrequest == null){
+            friendrequest = friendrequestRepository.findBySenderUserIdAndReceiverUserId(receiverId , senderId);
+        }
+        if (friendrequest == null) {
+            return null;
+        }
+        return toDTO(friendrequest);
     }
 }

@@ -25,8 +25,11 @@ public class Notification implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer notificationId;
 
-    @Column(name = "userId", insertable=false, updatable=false)
-    private Integer userId;
+    @Column(name = "senderId")
+    private Integer senderId;
+
+    @Column(name = "receiverId")
+    private Integer receiverId;
 
     @Column(name = "type")
     private String type;
@@ -35,13 +38,17 @@ public class Notification implements Serializable {
     private String link;
 
     @Column(name = "isRead")
-    private Integer isRead;
+    private boolean isRead;
 
     @Column(name = "createdAt")
     private Date createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "senderId" , insertable=false, updatable=false)
+    private User sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiverId" , insertable=false, updatable=false)
+    private User receiver;
 
 }

@@ -1,7 +1,7 @@
 package com.webchat.webchat_be.service;
 
 import com.webchat.webchat_be.dto.UserfollowingDTO;
-import com.webchat.webchat_be.entity.Userfollowing;
+import com.webchat.webchat_be.entity.UserFollowing;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +11,7 @@ import com.webchat.webchat_be.vo.UserfollowingQueryVO;
 import com.webchat.webchat_be.vo.UserfollowingUpdateVO;
 import com.webchat.webchat_be.vo.UserfollowingVO;
 
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 @Service
@@ -20,8 +21,15 @@ public class UserfollowingService {
     private UserfollowingRepository userfollowingRepository;
 
     public Integer save(UserfollowingVO vO) {
-        Userfollowing bean = new Userfollowing();
+        // check if user following already existed
+        UserfollowingDTO userfollowingDTO = findByUserIdAndFollowingUserId(vO.getUserId() , vO.getFollowingUserId());
+        if(userfollowingDTO != null){
+            return userfollowingDTO.getFollowingId();
+        }
+
+        UserFollowing bean = new UserFollowing();
         BeanUtils.copyProperties(vO, bean);
+        bean.setFollowDate(new Date());
         bean = userfollowingRepository.save(bean);
         return bean.getFollowingId();
     }
@@ -31,13 +39,13 @@ public class UserfollowingService {
     }
 
     public void update(Integer id, UserfollowingUpdateVO vO) {
-        Userfollowing bean = requireOne(id);
+        UserFollowing bean = requireOne(id);
         BeanUtils.copyProperties(vO, bean);
         userfollowingRepository.save(bean);
     }
 
     public UserfollowingDTO getById(Integer id) {
-        Userfollowing original = requireOne(id);
+        UserFollowing original = requireOne(id);
         return toDTO(original);
     }
 
@@ -45,14 +53,23 @@ public class UserfollowingService {
         throw new UnsupportedOperationException();
     }
 
-    private UserfollowingDTO toDTO(Userfollowing original) {
+    private UserfollowingDTO toDTO(UserFollowing original) {
         UserfollowingDTO bean = new UserfollowingDTO();
         BeanUtils.copyProperties(original, bean);
         return bean;
     }
 
-    private Userfollowing requireOne(Integer id) {
+    private UserFollowing requireOne(Integer id) {
         return userfollowingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Resource not found: " + id));
+    }
+
+    public UserfollowingDTO findByUserIdAndFollowingUserId (int userId , int followingUserId){
+        UserFollowing userFollowing = userfollowingRepository.findByUserIdAndFollowingUserId(userId , followingUserId);
+        if(userFollowing != null){
+            return toDTO(userFollowing);
+        }else{
+            return null;
+        }
     }
 }

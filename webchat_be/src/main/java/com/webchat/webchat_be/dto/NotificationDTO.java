@@ -1,6 +1,7 @@
 package com.webchat.webchat_be.dto;
 
 
+import com.webchat.webchat_be.entity.User;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,14 +12,18 @@ public class NotificationDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer notificationId;
 
-    private Integer userId;
+    private Integer senderId;
+
+    private Integer receiverId;
 
     private String type;
 
     private String link;
 
-    private Integer isRead;
+    private boolean isRead;
 
     private Date createdAt;
+
+    private UserDTO sender;
 
 }

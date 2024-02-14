@@ -1,7 +1,7 @@
 package com.webchat.webchat_be.auth;
 import com.webchat.webchat_be.config.JwtService;
 import com.webchat.webchat_be.entity.User;
-import com.webchat.webchat_be.enums.Role;
+import com.webchat.webchat_be.enums.UserRole;
 import com.webchat.webchat_be.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +23,7 @@ public class AuthenticationService {
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .userRole(UserRole.USER)
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);

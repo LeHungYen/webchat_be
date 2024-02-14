@@ -1,12 +1,10 @@
 package com.webchat.webchat_be.entity;
 
-import com.webchat.webchat_be.enums.Role;
+import com.webchat.webchat_be.enums.UserRole;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,8 +21,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-@Data
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -83,7 +80,7 @@ public class User implements Serializable , UserDetails {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole userRole;
 
     @OneToMany(mappedBy = "participant1Id")
     private List<Chat> chatsAsParticipant1;
@@ -122,16 +119,19 @@ public class User implements Serializable , UserDetails {
     private List<Group> groups;
 
     @OneToMany(mappedBy = "user")
-    private List<Userfollowing> followee;
+    private List<UserFollowing> following;
 
     @OneToMany(mappedBy = "followingUser")
-    private List<Userfollowing> userFollowings;
+    private List<UserFollowing> follower;
 
     @OneToMany(mappedBy = "user")
     private List<Advertisement> advertisements;
 
-    @OneToMany(mappedBy = "user")
-    private List<Notification> notifications;
+    @OneToMany(mappedBy = "senderId")
+    private List<Notification> notificationsSender;
+
+    @OneToMany(mappedBy = "receiverId")
+    private List<Notification> notificationsReceiver;
 
     @OneToMany(mappedBy = "user")
     private List<Adclick> adclicks;
@@ -225,7 +225,7 @@ public class User implements Serializable , UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(userRole.name()));
     }
 
     @Override

@@ -3,15 +3,10 @@ package com.webchat.webchat_be.controller;
 import com.webchat.webchat_be.dto.FriendshipDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.webchat.webchat_be.service.FriendshipService;
 import com.webchat.webchat_be.vo.FriendshipQueryVO;
 import com.webchat.webchat_be.vo.FriendshipUpdateVO;
@@ -28,14 +23,20 @@ public class FriendshipController {
     @Autowired
     private FriendshipService friendshipService;
 
+    @CrossOrigin
     @PostMapping
     public String save(@Valid @RequestBody FriendshipVO vO) {
         return friendshipService.save(vO).toString();
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@Valid @NotNull @PathVariable("id") Integer id) {
-        friendshipService.delete(id);
+    @CrossOrigin
+    @DeleteMapping()
+    public void delete(
+            @RequestParam("friendshipId") int friendshipId,
+            @RequestParam("userId1") int userId1,
+            @RequestParam("userId2") int userId2)
+    {
+        friendshipService.delete(friendshipId , userId1 , userId2);
     }
 
     @PutMapping("/{id}")
@@ -52,5 +53,16 @@ public class FriendshipController {
     @GetMapping
     public Page<FriendshipDTO> query(@Valid FriendshipQueryVO vO) {
         return friendshipService.query(vO);
+    }
+
+    @CrossOrigin
+    @GetMapping("/findByUserId1AndUserId2")
+    public ResponseEntity<?> findByUserId1AndUserId2(@RequestParam("userId1") int userId1 , @RequestParam("userId2") int userId2){
+        FriendshipDTO friendshipDTO = friendshipService.findByUserId1AndUserId2(userId1 , userId2);
+        if(friendshipDTO != null){
+            return ResponseEntity.ok(friendshipDTO);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Friendship not found");
+        }
     }
 }
