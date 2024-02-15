@@ -33,6 +33,7 @@ public class NotificationController {
         return notificationService.save(vO).toString();
     }
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public void delete(@Valid @NotNull @PathVariable("id") Integer id) {
         notificationService.delete(id);

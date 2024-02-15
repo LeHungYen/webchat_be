@@ -29,6 +29,8 @@ public class FriendrequestService {
     }
 
     public void delete(Integer id) {
+
+
         friendrequestRepository.deleteById(id);
     }
 
