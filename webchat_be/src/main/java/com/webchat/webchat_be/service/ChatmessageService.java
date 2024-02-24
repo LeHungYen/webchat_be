@@ -4,10 +4,13 @@ import com.webchat.webchat_be.dto.ChatDTO;
 import com.webchat.webchat_be.dto.ChatParticipantDTO;
 import com.webchat.webchat_be.dto.ChatmessageDTO;
 import com.webchat.webchat_be.dto.NotificationDTO;
+import com.webchat.webchat_be.entity.ChatMessageParticipant;
 import com.webchat.webchat_be.entity.ChatParticipant;
 import com.webchat.webchat_be.entity.Chatmessage;
 import com.webchat.webchat_be.enums.ChatMessageMediaType;
+import com.webchat.webchat_be.enums.ChatMessageParticipantStatus;
 import com.webchat.webchat_be.enums.ChatMessageStatus;
+import com.webchat.webchat_be.repository.ChatMessageParticipantRepository;
 import com.webchat.webchat_be.repository.ChatParticipantRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +40,13 @@ public class ChatmessageService {
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
-    private ChatmessageRepository chatmessageRepository;
+    ChatmessageRepository chatmessageRepository;
     @Autowired
-    private ChatParticipantRepository chatParticipantRepository;
+    ChatParticipantRepository chatParticipantRepository;
     @Autowired
-    private ChatParticipantService chatParticipantService;
+    ChatParticipantService chatParticipantService;
+    @Autowired
+    ChatMessageParticipantRepository chatMessageParticipantRepository;
 
     public ChatmessageDTO save(ChatmessageVO vO) {
         Chatmessage bean = new Chatmessage();
@@ -49,12 +54,18 @@ public class ChatmessageService {
         bean.setCreatedAt(new Date());
         bean = chatmessageRepository.save(bean);
 
-
-        // update chat paticipant before save message
+        // update chat paticipant
         List<ChatParticipant> chatParticipants = chatParticipantService.findByChatId(vO.getChatId());
         for (ChatParticipant  chatParticipant: chatParticipants) {
             chatParticipant.setLastMessageSentAt(new Date());
             chatParticipantRepository.save(chatParticipant);
+
+            // create chat message participant
+            ChatMessageParticipant chatMessageParticipant = new ChatMessageParticipant();
+            chatMessageParticipant.setChatMessageId(bean.getChatMessageId());
+            chatMessageParticipant.setChatParticipantId(chatParticipant.getChatParticipantId());
+            chatMessageParticipant.setStatus(String.valueOf(ChatMessageParticipantStatus.RECEIVED));
+            chatMessageParticipantRepository.save(chatMessageParticipant);
 
             // send message to chat paticipant
             simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+ chatParticipant.getUserId() , bean);
@@ -78,7 +89,7 @@ public class ChatmessageService {
         bean.setMediaType(String.valueOf(ChatMessageMediaType.IMAGE));
         bean.setMediaURL(saveFile(file));
         bean.setCreatedAt(new Date());
-        bean.setStatus(String.valueOf(ChatMessageStatus.SENDED));
+//        bean.setStatus(String.valueOf(ChatMessageStatus.SENDED));   checkkkkkkkkkkkkkkkkkkk
         bean = chatmessageRepository.save(bean);
 
         // send message to subcribers

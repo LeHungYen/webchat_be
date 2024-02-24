@@ -50,8 +50,8 @@ public class Chatmessage implements Serializable {
     @Column(name = "createdAt")
     private Date createdAt;
 
-    @Column(name = "status")
-    private String status;
+//    @Column(name = "status")
+//    private String status;
 
     @ManyToOne
     @JoinColumn (name = "chatId" , insertable=false, updatable=false)

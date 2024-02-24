@@ -25,6 +25,6 @@ public class ChatmessageQueryVO implements Serializable {
 
     private Date createdAt;
 
-    private String status;
+//    private String status;
 
 }
