@@ -54,11 +54,6 @@ public class UserfollowingController {
     @CrossOrigin
     @GetMapping("/findByUserIdAndFollowingUserId")
     public ResponseEntity<?> findByUserIdAndFollowingUserId(@RequestParam("userId") int userId , @RequestParam("followingUserId") int followingUserId){
-        UserfollowingDTO userfollowingDTO = userfollowingService.findByUserIdAndFollowingUserId(userId , followingUserId);
-        if(userfollowingDTO == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("UserFollowing not found");
-        }else{
-            return ResponseEntity.ok(userfollowingDTO);
-        }
+        return ResponseEntity.ok(userfollowingService.findByUserIdAndFollowingUserId(userId , followingUserId));
     }
 }

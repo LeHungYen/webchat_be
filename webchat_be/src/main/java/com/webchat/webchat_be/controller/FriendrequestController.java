@@ -60,12 +60,7 @@ public class FriendrequestController {
             @RequestParam("senderId") int senderId,
             @RequestParam("receiverId") int receiverId
             ){
-    FriendrequestDTO friendrequestDTO = friendrequestService.getBySenderIdAndReceiveId(senderId ,receiverId);
 
-        if(friendrequestDTO != null){
-            return ResponseEntity.ok(friendrequestDTO);
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Friend request not found");
-        }
+        return ResponseEntity.ok(friendrequestService.getBySenderIdAndReceiveId(senderId ,receiverId));
     }
 }

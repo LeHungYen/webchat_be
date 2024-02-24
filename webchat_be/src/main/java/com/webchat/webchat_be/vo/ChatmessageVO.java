@@ -18,7 +18,9 @@ public class ChatmessageVO implements Serializable {
     private Integer chatId;
 
     @NotNull(message = "senderUserId can not null")
-    private Integer senderUserId;
+    private Integer chatParticipantId;
+
+    private Integer replyToMessageId;
 
     private String content;
 

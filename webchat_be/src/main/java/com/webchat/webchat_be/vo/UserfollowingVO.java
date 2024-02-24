@@ -1,5 +1,6 @@
 package com.webchat.webchat_be.vo;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import java.util.Date;
 
 
 @Data
+//@Builder
 public class UserfollowingVO implements Serializable {
     private static final long serialVersionUID = 1L;
 

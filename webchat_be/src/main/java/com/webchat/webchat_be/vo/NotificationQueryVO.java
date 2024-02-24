@@ -21,7 +21,7 @@ public class NotificationQueryVO implements Serializable {
 
     private String link;
 
-    private boolean isRead;
+    private boolean read;
 
     private Date createdAt;
 

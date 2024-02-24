@@ -3,6 +3,8 @@ package com.webchat.webchat_be.service;
 import com.webchat.webchat_be.dto.UserDTO;
 import com.webchat.webchat_be.dto.search.SearchUser;
 import com.webchat.webchat_be.entity.User;
+import com.webchat.webchat_be.enums.UserStatus;
+import com.webchat.webchat_be.utilities.Utilities;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,13 +24,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-//    private final JdbcTemplate jdbcTemplate;
-
-//    public UserService(JdbcTemplate jdbcTemplate) {
-//        this.jdbcTemplate = jdbcTemplate;
-//    }
-
 
     public Integer save(UserVO vO) {
         User bean = new User();
@@ -72,74 +67,35 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("Resource not found: " + id));
     }
 
-//    public List<SearchUser> searchUserByKey(String keySearch) {
-//        String sql = "SELECT " +
-//                "    u.fullName, " +
-//                "    u.phoneNumber, " +
-//                "    u.email, " +
-//                "    COALESCE(ur.totalUserReaction, 0) AS totalLikes, " +
-//                "    COALESCE(uf.totalUserFollowing, 0) AS following, " +
-//                "    COALESCE(uf2.totalUserFollower, 0) AS follower " +
-//                "FROM " +
-//                "    User u " +
-//                "LEFT JOIN ( " +
-//                "    SELECT " +
-//                "        userId, " +
-//                "        COUNT(reactionId) AS totalUserReaction " +
-//                "    FROM " +
-//                "        UserReaction " +
-//                "    GROUP BY " +
-//                "        userId " +
-//                ") AS ur ON u.userId = ur.userId " +
-//                "LEFT JOIN ( " +
-//                "    SELECT " +
-//                "        userId, " +
-//                "        COUNT(followingId) AS totalUserFollowing " +
-//                "    FROM " +
-//                "        UserFollowing " +
-//                "    GROUP BY " +
-//                "        userId " +
-//                ") AS uf ON u.userId = uf.userId " +
-//                "LEFT JOIN ( " +
-//                "    SELECT " +
-//                "        followingUserId, " +
-//                "        COUNT(followingId) AS totalUserFollower " +
-//                "    FROM " +
-//                "        UserFollowing " +
-//                "    GROUP BY " +
-//                "        followingUserId " +
-//                ") AS uf2 ON u.userId = uf2.followingUserId " +
-//                "WHERE " +
-//                "    u.fullName LIKE CONCAT('%', ?, '%') " +
-//                "    OR u.email LIKE CONCAT('%', ?, '%') " +
-//                "    OR u.phoneNumber LIKE CONCAT('%', ?, '%')";
-//
-////        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, keySearch, keySearch, keySearch);
-////
-////        return rows.stream()
-////                .map(row -> {
-////                    SearchUser user = new SearchUser();
-////                    user.setFullName((String) row.get("fullName"));
-////                    user.setPhoneNumber((String) row.get("phoneNumber"));
-////                    user.setEmail((String) row.get("email"));
-////                    user.setTotalLikes((Long) row.get("totalLikes"));
-////                    user.setFollowing((Long) row.get("following"));
-////                    user.setFollower((Long) row.get("follower"));
-////                    return user;
-////                })
-////                .collect(Collectors.toList());
-//
-//        return jdbcTemplate.query(sql, new Object[]{keySearch, keySearch, keySearch}, new BeanPropertyRowMapper<>(SearchUser.class));
-//    }
 
     public List<SearchUser>  searchUserByKey(String keySearch) {
-         List<User> users = userRepository.findByEmailIgnoreCaseContainingOrFullNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(keySearch , keySearch , keySearch);
+        keySearch = keySearch.trim();
         List<SearchUser> searchUsers = new ArrayList<>();
+        if(keySearch == "" || keySearch == null){
+            return searchUsers;
+        }
 
-        for ( User user: users) {
-            searchUsers.add(new SearchUser( user.getUserId() ,user.getProfilePicture() , user.getFullName() , user.getPhoneNumber() , user.getEmail() ,user.getUserReactions().size(), user.getFollowing().size() , user.getFollower().size()));
+        List<User> users = userRepository.findByEmailIgnoreCaseContainingOrFullNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(keySearch , keySearch , keySearch);
+
+        if(users.size() > 0){
+            for ( User user: users) {
+                searchUsers.add(new SearchUser( user.getUserId() ,user.getProfilePicture() , user.getFullName() , user.getPhoneNumber() , user.getEmail() ,user.getUserReactions().size(), user.getFollowing().size() , user.getFollower().size()));
+            }
         }
         return searchUsers;
+    }
+
+    public void updateStatusOnline(int userId) {
+        User bean = requireOne(userId);
+        bean.setStatus(String.valueOf(UserStatus.ONLINE));
+        userRepository.save(bean);
+    }
+
+    public void updateStatusOffline(int userId) {
+        User bean = requireOne(userId);
+        bean.setStatus(String.valueOf(UserStatus.OFFLINE));
+        bean.setLastLogin(new Date());
+        userRepository.save(bean);
     }
 
 }

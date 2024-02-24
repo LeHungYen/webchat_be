@@ -2,6 +2,9 @@ package com.webchat.webchat_be.entity;
 
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import lombok.Builder;
 import lombok.Data;
 
 import jakarta.persistence.Column;
@@ -12,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,11 +29,14 @@ public class Chatmessage implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer chatMessageId;
 
-    @Column(name = "chatId", insertable=false, updatable=false)
+    @Column(name = "replyToMessageId")
+    private Integer replyToMessageId;
+
+    @Column(name = "chatId")
     private Integer chatId;
 
-    @Column(name = "senderUserId", insertable=false, updatable=false)
-    private Integer senderUserId;
+    @Column(name = "chatParticipantId")
+    private Integer chatParticipantId;
 
     @Column(name = "content")
     private String content;
@@ -47,11 +54,15 @@ public class Chatmessage implements Serializable {
     private String status;
 
     @ManyToOne
-    @JoinColumn (name = "chatId")
+    @JoinColumn (name = "chatId" , insertable=false, updatable=false)
     private Chat chat;
 
     @ManyToOne
-    @JoinColumn (name = "senderUserId")
-    private User user;
+    @JoinColumn (name = "chatParticipantId" , insertable=false, updatable=false)
+    private ChatParticipant chatParticipant;
+
+    @OneToMany (mappedBy = "chatmessage")
+    private List<ChatMessageParticipant> chatMessageParticipants;
+
 
 }

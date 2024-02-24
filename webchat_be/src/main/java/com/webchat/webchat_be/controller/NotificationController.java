@@ -39,6 +39,7 @@ public class NotificationController {
         notificationService.delete(id);
     }
 
+    @CrossOrigin
     @PutMapping("/{id}")
     public void update(@Valid @NotNull @PathVariable("id") Integer id,
                        @Valid @RequestBody NotificationUpdateVO vO) {
@@ -56,29 +57,17 @@ public class NotificationController {
     }
 
 
-    @MessageMapping("/notification")
-    @SendTo("/topic/notification")
-    public NotificationDTO sendNotification(@Payload NotificationVO vO){
-        NotificationDTO notificationDTO = notificationService.save(vO);
-        return notificationDTO;
-    }
+//    @MessageMapping("/notification")
+//    @SendTo("/topic/notification")
+//    public NotificationDTO sendNotification(@Payload NotificationVO vO){
+//        NotificationDTO notificationDTO = notificationService.save(vO);
+//        return notificationDTO;
+//    }
 
     @CrossOrigin
     @GetMapping("/getNotifications")
     public ResponseEntity<?> getNotifications (){
         return ResponseEntity.ok(notificationService.getNotifications());
     }
-
-//    SimpMessagingTemplate simpMessagingTemplate ;
-//    @MessageMapping("/notification")
-////    @SendTo("/topic/notification")
-//    public void sendNotification(@Payload NotificationVO vO){
-//        NotificationDTO notificationDTO = notificationService.save(vO);
-//        UserDTO userDTO = Utilities.getUserDTOFromContext();
-//        if(notificationDTO.getReceiverId()  == userDTO.getUserId()){
-//
-//            simpMessagingTemplate.convertAndSend("/topic/notification" , notificationDTO);
-//        }
-//    }
 
 }

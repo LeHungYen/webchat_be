@@ -1,10 +1,13 @@
 package com.webchat.webchat_be.service;
 
+import com.webchat.webchat_be.dto.FriendrequestDTO;
 import com.webchat.webchat_be.dto.FriendshipDTO;
 import com.webchat.webchat_be.dto.UserfollowingDTO;
 import com.webchat.webchat_be.entity.Friendship;
 import com.webchat.webchat_be.entity.UserFollowing;
+import com.webchat.webchat_be.enums.FriendRequestStatus;
 import com.webchat.webchat_be.repository.UserfollowingRepository;
+import com.webchat.webchat_be.vo.UserfollowingVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +27,33 @@ public class FriendshipService {
     private FriendshipRepository friendshipRepository;
     @Autowired
     private UserfollowingRepository userfollowingRepository;
+
+    @Autowired UserfollowingService userfollowingService;
+
+    @Autowired
+    FriendrequestService friendrequestService;
     public Integer save(FriendshipVO vO) {
+        // delete friend request before be friend
+           FriendrequestDTO friendrequestDTO = friendrequestService.getBySenderIdAndReceiveId(vO.getUserId1() , vO.getUserId2());
+           friendrequestService.delete(friendrequestDTO.getRequestId());
+
+        // follow before be friend
+        FriendRequestStatus friendRequestStatus = FriendRequestStatus.valueOf(friendrequestDTO.getStatus());
+
+        if(friendRequestStatus.equals(FriendRequestStatus.WAITING_FOR_THE_RECEIVER_TO_RESPONSE)){
+            UserfollowingVO userfollowingVO = new UserfollowingVO();
+            userfollowingVO.setUserId(friendrequestDTO.getReceiverUserId());
+            userfollowingVO.setFollowingUserId(friendrequestDTO.getSenderUserId());
+            userfollowingService.save(userfollowingVO);
+        }else if(friendRequestStatus.equals(FriendRequestStatus.WAITING_FOR_THE_SENDER_TO_RESPONSE)){
+            UserfollowingVO userfollowingVO = new UserfollowingVO();
+            userfollowingVO.setUserId(friendrequestDTO.getSenderUserId());
+            userfollowingVO.setFollowingUserId(friendrequestDTO.getReceiverUserId());
+            userfollowingService.save(userfollowingVO);
+        }
+
+        // delete notification before be friend
+
         Friendship bean = new Friendship();
         BeanUtils.copyProperties(vO, bean);
         bean.setCreateAt(new Date());

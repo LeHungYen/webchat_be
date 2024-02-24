@@ -82,11 +82,8 @@ public class User implements Serializable , UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "participant1Id")
-    private List<Chat> chatsAsParticipant1;
-
-    @OneToMany(mappedBy = "participant2Id")
-    private List<Chat> chatsAsParticipant2;
+    @OneToMany(mappedBy = "user")
+    private List<ChatParticipant> chatParticipants;
 
     @OneToMany(mappedBy = "user1")
     private List<Friendship> friendships1;
@@ -100,8 +97,8 @@ public class User implements Serializable , UserDetails {
     @OneToMany(mappedBy = "receiverUser")
     private List<Friendrequest> receive;
 
-    @OneToMany(mappedBy = "user")
-    private List<Chatmessage> chatMessages;
+//    @OneToMany(mappedBy = "user")
+//    private List<Chatmessage> chatMessages;
 
     @OneToMany(mappedBy = "ratedUser")
     private List<Rating> rated;

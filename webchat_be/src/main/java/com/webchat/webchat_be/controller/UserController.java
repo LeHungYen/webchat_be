@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.webchat.webchat_be.service.UserService;
@@ -58,11 +61,6 @@ public class UserController {
     @CrossOrigin
     @GetMapping("/{id}")
     public UserDTO getById(@Valid @NotNull @PathVariable("id") Integer id) {
-        if(id == null){
-            UserDTO userDTO = Utilities.getUserDTOFromContext();
-            return userDTO;
-        }
-
         return userService.getById(id);
     }
 
@@ -70,4 +68,19 @@ public class UserController {
     public Page<UserDTO> query(@Valid UserQueryVO vO) {
         return userService.query(vO);
     }
+
+    @MessageMapping("/connect")
+//    @SendTo("/topic/connect")
+    public void connect(@Payload int userId) {
+        System.out.println(userId + " connected");
+      userService.updateStatusOnline(userId);
+    }
+
+    @MessageMapping("/disconnect")
+//    @SendTo("/topic/disconnect")
+    public void disconnect(@Payload int userId) {
+        System.out.println(userId + " disconnected");
+        userService.updateStatusOffline(userId);
+    }
+
 }

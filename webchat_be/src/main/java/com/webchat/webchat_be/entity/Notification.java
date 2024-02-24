@@ -38,7 +38,7 @@ public class Notification implements Serializable {
     private String link;
 
     @Column(name = "isRead")
-    private boolean isRead;
+    private boolean read;
 
     @Column(name = "createdAt")
     private Date createdAt;

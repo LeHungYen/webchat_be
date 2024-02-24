@@ -58,11 +58,6 @@ public class FriendshipController {
     @CrossOrigin
     @GetMapping("/findByUserId1AndUserId2")
     public ResponseEntity<?> findByUserId1AndUserId2(@RequestParam("userId1") int userId1 , @RequestParam("userId2") int userId2){
-        FriendshipDTO friendshipDTO = friendshipService.findByUserId1AndUserId2(userId1 , userId2);
-        if(friendshipDTO != null){
-            return ResponseEntity.ok(friendshipDTO);
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Friendship not found");
-        }
+        return ResponseEntity.ok(friendshipService.findByUserId1AndUserId2(userId1 , userId2));
     }
 }

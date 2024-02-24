@@ -27,24 +27,19 @@ public class Chat implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer chatId;
 
-    @Column(name = "participant1Id", insertable=false, updatable=false)
-    private Integer participant1Id;
+    @Column(name = "type")
+    private String type;
 
-    @Column(name = "participant2Id", insertable=false, updatable=false)
-    private Integer participant2Id;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "createdAt")
     private Date createdAt;
 
-    @ManyToOne
-    @JoinColumn (name = "participant1Id" , referencedColumnName = "userId")
-    private User participant1;
-
-    @ManyToOne
-    @JoinColumn (name = "participant2Id" , referencedColumnName = "userId")
-    private User participant2;
-
     @OneToMany (mappedBy = "chat")
     private List<Chatmessage> chatMessages;
+
+    @OneToMany (mappedBy = "chat")
+    private List<ChatParticipant> chatParticipants;
 
 }

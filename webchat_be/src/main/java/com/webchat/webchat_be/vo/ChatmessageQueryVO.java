@@ -11,10 +11,11 @@ public class ChatmessageQueryVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer chatMessageId;
+    private Integer replyToMessageId;
 
     private Integer chatId;
 
-    private Integer senderUserId;
+    private Integer chatParticipantId;
 
     private String content;
 

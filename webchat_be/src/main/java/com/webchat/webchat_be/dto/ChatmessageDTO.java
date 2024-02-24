@@ -13,7 +13,7 @@ public class ChatmessageDTO implements Serializable {
 
     private Integer chatId;
 
-    private Integer senderUserId;
+    private Integer chatParticipantId;
 
     private String content;
 

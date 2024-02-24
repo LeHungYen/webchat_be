@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Integer>, JpaSpecificationExecutor<Notification> {
     List<Notification> getByReceiverIdOrderByCreatedAtDesc (int receiverId);
+
+    Notification getBySenderIdAndReceiverIdAndType (int senderId , int receiverId , String type);
 }
