@@ -22,8 +22,9 @@ import java.util.Date;
 import java.util.List;
 
 @Builder
-@Data
 @AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "user")

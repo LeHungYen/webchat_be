@@ -78,8 +78,10 @@ public class ChatmessageController {
 
     @CrossOrigin
     @GetMapping ("/findByChatId")
-    public Page<ChatmessageDTO> findByChatId(@RequestParam("chatId") int chatId , @RequestParam("pageNumber") int pageNumber){
-        return chatmessageService.findAllByChatId(chatId , pageNumber);
+    public Page<ChatmessageDTO> findByChatId(@RequestParam("chatId") int chatId, @RequestParam("chatParticipantId") int chatParticipantId , @RequestParam("pageNumber") int pageNumber){
+        System.out.println(chatParticipantId);
+        return chatmessageService.findAllByChatId(chatId, chatParticipantId , pageNumber);
+
     }
 
     @GetMapping

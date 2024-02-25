@@ -4,5 +4,5 @@ public enum ChatMessageParticipantStatus {
     DELETED_BY_RECEIVER,
     DELETED_BY_SENDER,
     RECEIVED,
-    READ
+    WATCHED
 }

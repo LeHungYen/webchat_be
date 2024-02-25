@@ -47,6 +47,8 @@ public class ChatmessageService {
     ChatParticipantService chatParticipantService;
     @Autowired
     ChatMessageParticipantRepository chatMessageParticipantRepository;
+    @Autowired
+    ChatMessageParticipantService chatMessageParticipantService;
 
     public ChatmessageDTO save(ChatmessageVO vO) {
         Chatmessage bean = new Chatmessage();
@@ -173,16 +175,17 @@ public class ChatmessageService {
         return new ChatmessageDTO();
     }
 
-    public Page<ChatmessageDTO> findAllByChatId (int chatId , int pageNumber){
+    public Page<ChatmessageDTO> findAllByChatId (int chatId, int chatParticipantId , int pageNumber){
         // set status trước khi lấy
+        chatMessageParticipantService.setStatusReceivedToWatched(chatParticipantId , chatId);
 
 
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(pageNumber , 20 , sort);
 
         Page<Chatmessage> chatmessagePage = chatmessageRepository.findAllByChatId(chatId, pageable);
-
         Page<ChatmessageDTO> chatmessageDTOPage = chatmessagePage.map(chatmessage -> {
+//            chatMessageParticipantService
             ChatmessageDTO dto = new ChatmessageDTO();
             BeanUtils.copyProperties(chatmessage , dto);
             return dto;

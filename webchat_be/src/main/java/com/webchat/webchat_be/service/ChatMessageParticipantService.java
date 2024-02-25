@@ -2,6 +2,7 @@ package com.webchat.webchat_be.service;
 
 import com.webchat.webchat_be.dto.ChatMessageParticipantDTO;
 import com.webchat.webchat_be.entity.ChatMessageParticipant;
+import com.webchat.webchat_be.enums.ChatMessageParticipantStatus;
 import com.webchat.webchat_be.repository.ChatMessageParticipantRepository;
 import com.webchat.webchat_be.vo.ChatMessageParticipantQueryVO;
 import com.webchat.webchat_be.vo.ChatMessageParticipantUpdateVO;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -34,6 +36,27 @@ public class ChatMessageParticipantService {
         ChatMessageParticipant bean = requireOne(id);
         BeanUtils.copyProperties(vO, bean);
         chatMessageParticipantRepository.save(bean);
+    }
+
+    public List<ChatMessageParticipant> findByChatMessageIdAndChatParticipantId(int chatMessageId, int chatParticipantId) {
+        return chatMessageParticipantRepository.getByChatMessageIdAndChatParticipantId(chatMessageId,chatParticipantId);
+    }
+
+    public List<ChatMessageParticipant> findByChatParticipantIdAndStatusAndChatId(int chatParticipantId , String status , int chatId) {
+        return chatMessageParticipantRepository.getByChatParticipantIdAndStatusAndChatmessageChatId(chatParticipantId, status , chatId);
+    }
+
+    public void setStatusReceivedToWatched(int chatParticipantId , int chatId) {
+        List<ChatMessageParticipant> chatMessageParticipants = findByChatParticipantIdAndStatusAndChatId(chatParticipantId , String.valueOf(ChatMessageParticipantStatus.RECEIVED) , chatId);
+
+        System.out.println(chatMessageParticipants);
+
+        if (!chatMessageParticipants.isEmpty()) {
+            chatMessageParticipants.forEach(chatMessageParticipant -> {
+                chatMessageParticipant.setStatus(String.valueOf(ChatMessageParticipantStatus.WATCHED));
+            });
+            chatMessageParticipantRepository.saveAll(chatMessageParticipants);
+        }
     }
 
     public ChatMessageParticipantDTO getById(Integer id) {
