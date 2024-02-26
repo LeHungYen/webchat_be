@@ -4,6 +4,7 @@ package com.webchat.webchat_be.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 public class ChatMessageParticipantDTO implements Serializable {
@@ -15,5 +16,13 @@ public class ChatMessageParticipantDTO implements Serializable {
     private Integer chatParticipantId;
 
     private String status;
+
+    private Date lastViewedAt;
+
+//    private int chatParticipantIdOfSender;
+
+    private String userParticipantName;
+
+    private String userProfilePicture;
 
 }

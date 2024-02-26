@@ -37,11 +37,11 @@ public class ChatMessageParticipantController {
         chatMessageParticipantService.update(id, vO);
     }
 
-    @CrossOrigin
-    @PutMapping("/updateStatusWatched/{chatParticipantId}/{chatId}")
-    public void updateStatusWatched(@PathVariable("chatParticipantId") Integer chatParticipantId , @PathVariable("chatId") Integer chatId) {
-        chatMessageParticipantService.setStatusReceivedToWatched(chatParticipantId, chatId);
-    }
+//    @CrossOrigin
+//    @PutMapping("/updateStatusWatched/{chatParticipantId}/{chatId}")
+//    public void updateStatusWatched(@PathVariable("chatParticipantId") Integer chatParticipantId , @PathVariable("chatId") Integer chatId) {
+//        chatMessageParticipantService.setStatusReceivedToWatched(chatParticipantId, chatId);
+//    }
 
     @GetMapping("/{id}")
     public ChatMessageParticipantDTO getById(@Valid @NotNull @PathVariable("id") Integer id) {

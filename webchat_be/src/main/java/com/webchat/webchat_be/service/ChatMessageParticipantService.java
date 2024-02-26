@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatMessageParticipantService {
@@ -46,17 +48,57 @@ public class ChatMessageParticipantService {
         return chatMessageParticipantRepository.getByChatParticipantIdAndStatusAndChatmessageChatId(chatParticipantId, status , chatId);
     }
 
-    public void setStatusReceivedToWatched(int chatParticipantId , int chatId) {
-        List<ChatMessageParticipant> chatMessageParticipants = findByChatParticipantIdAndStatusAndChatId(chatParticipantId , String.valueOf(ChatMessageParticipantStatus.RECEIVED) , chatId);
+//    public void setStatusReceivedToWatched(int chatParticipantId , int chatId) {
+//        List<ChatMessageParticipant> chatMessageParticipants = findByChatParticipantIdAndStatusAndChatId(chatParticipantId , String.valueOf(ChatMessageParticipantStatus.RECEIVED) , chatId);
+//
+//        System.out.println(chatMessageParticipants);
+//
+//        if (!chatMessageParticipants.isEmpty()) {
+//            chatMessageParticipants.forEach(chatMessageParticipant -> {
+//                chatMessageParticipant.setStatus(String.valueOf(ChatMessageParticipantStatus.WATCHED));
+//            });
+//            chatMessageParticipantRepository.saveAll(chatMessageParticipants);
+//        }
+//    }
 
-        System.out.println(chatMessageParticipants);
+    public List<ChatMessageParticipant> getLastViewedMessage (int chatParticipantId , int chatId){
+        return chatMessageParticipantRepository.
+                getByChatParticipantIdAndChatmessageChatIdAndLastViewedAtIsNotNull
+                        (chatParticipantId,chatId);
+    }
 
-        if (!chatMessageParticipants.isEmpty()) {
-            chatMessageParticipants.forEach(chatMessageParticipant -> {
-                chatMessageParticipant.setStatus(String.valueOf(ChatMessageParticipantStatus.WATCHED));
+    public List<ChatMessageParticipantDTO> getByChatMessageId (int chatMessageId){
+        List<ChatMessageParticipant> chatMessageParticipants =
+                chatMessageParticipantRepository.getAllByChatMessageId(chatMessageId);
+
+        List<ChatMessageParticipantDTO> chatMessageParticipantDTOs = chatMessageParticipants.
+                stream().map(chatMessageParticipant -> {
+                    ChatMessageParticipantDTO dto = new ChatMessageParticipantDTO();
+                    BeanUtils.copyProperties(chatMessageParticipant, dto);
+
+                    dto.setUserParticipantName(chatMessageParticipant.getChatParticipant().getUser().getFullName());
+                    dto.setUserProfilePicture(chatMessageParticipant.getChatParticipant().getUser().getProfilePicture());
+//                    dto.setChatParticipantIdOfSender(chatMessageParticipant.getChatmessage().getChatParticipantId());
+                    return dto;
+                }).collect(Collectors.toList());;
+
+        return chatMessageParticipantDTOs;
+    }
+
+    public void setLastViewedMessageToNull (int chatParticipantId , int chatId){
+        List<ChatMessageParticipant> chatMessageParticipants = getLastViewedMessage(chatParticipantId , chatId);
+        chatMessageParticipants.forEach(chatMessageParticipant -> {
+                chatMessageParticipant.setLastViewedAt(null);
             });
             chatMessageParticipantRepository.saveAll(chatMessageParticipants);
-        }
+    }
+
+    public void setLastViewedMessage(int chatParticipantId) {
+        ChatMessageParticipant chatMessageParticipant =
+                chatMessageParticipantRepository.
+                        getTopByChatParticipantIdOrderByChatMessageIdDesc(chatParticipantId);
+        chatMessageParticipant.setLastViewedAt(new Date());
+        chatMessageParticipantRepository.save(chatMessageParticipant);
     }
 
     public ChatMessageParticipantDTO getById(Integer id) {
@@ -78,4 +120,6 @@ public class ChatMessageParticipantService {
         return chatMessageParticipantRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Resource not found: " + id));
     }
+
+
 }

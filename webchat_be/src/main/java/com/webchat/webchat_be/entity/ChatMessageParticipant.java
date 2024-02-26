@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @Entity
@@ -32,6 +33,9 @@ public class ChatMessageParticipant implements Serializable {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "lastViewedAt")
+    private Date lastViewedAt;
 
     @ManyToOne
     @JoinColumn (name = "chatMessageId" , insertable = false , updatable = false)

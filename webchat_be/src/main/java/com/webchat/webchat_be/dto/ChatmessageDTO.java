@@ -1,10 +1,12 @@
 package com.webchat.webchat_be.dto;
 
 
+import com.webchat.webchat_be.entity.ChatMessageParticipant;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ChatmessageDTO implements Serializable {
@@ -24,5 +26,7 @@ public class ChatmessageDTO implements Serializable {
     private Date createdAt;
 
     private String status;
+
+    private List<ChatMessageParticipantDTO> chatMessageParticipantDTOs;
 
 }

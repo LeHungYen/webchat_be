@@ -10,4 +10,10 @@ public interface ChatMessageParticipantRepository extends JpaRepository<ChatMess
     List<ChatMessageParticipant> getByChatMessageIdAndChatParticipantId (int chatMessageId , int chatParticipantId);
 
     List<ChatMessageParticipant> getByChatParticipantIdAndStatusAndChatmessageChatId (int chatParticipantId , String status , int chatId);
+
+    List<ChatMessageParticipant> getByChatParticipantIdAndChatmessageChatIdAndLastViewedAtIsNotNull (int chatParticipantId , int chatId);
+
+    List<ChatMessageParticipant> getAllByChatMessageId (int chatMessageId);
+
+    ChatMessageParticipant getTopByChatParticipantIdOrderByChatMessageIdDesc (int chatParticipantId);
 }

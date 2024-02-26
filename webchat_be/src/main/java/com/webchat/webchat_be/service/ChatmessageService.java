@@ -1,9 +1,6 @@
 package com.webchat.webchat_be.service;
 
-import com.webchat.webchat_be.dto.ChatDTO;
-import com.webchat.webchat_be.dto.ChatParticipantDTO;
-import com.webchat.webchat_be.dto.ChatmessageDTO;
-import com.webchat.webchat_be.dto.NotificationDTO;
+import com.webchat.webchat_be.dto.*;
 import com.webchat.webchat_be.entity.ChatMessageParticipant;
 import com.webchat.webchat_be.entity.ChatParticipant;
 import com.webchat.webchat_be.entity.Chatmessage;
@@ -33,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatmessageService {
@@ -101,7 +99,8 @@ public class ChatmessageService {
     }
 
     private String saveFile(MultipartFile file) throws IOException {
-        String directoryPath = "/Users/lehungyen/Desktop/chatSphereFe/webchatFE/src/assets/imgs";
+//        String directoryPath = "/Users/lehungyen/Desktop/chatSphereFe/webchatFE/src/assets/imgs";
+        String directoryPath = "C:/Users/Loc/Desktop/socialsphere/src/assets/imgs";
 
         // Create the directory if it doesn't exist
         File directory = new File(directoryPath);
@@ -176,18 +175,23 @@ public class ChatmessageService {
     }
 
     public Page<ChatmessageDTO> findAllByChatId (int chatId, int chatParticipantId , int pageNumber){
-        // set status trước khi lấy
-        chatMessageParticipantService.setStatusReceivedToWatched(chatParticipantId , chatId);
+        // set last viewed message to null
+        chatMessageParticipantService.setLastViewedMessageToNull(chatParticipantId , chatId);
 
+        chatMessageParticipantService.setLastViewedMessage(chatParticipantId);
 
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(pageNumber , 20 , sort);
 
         Page<Chatmessage> chatmessagePage = chatmessageRepository.findAllByChatId(chatId, pageable);
         Page<ChatmessageDTO> chatmessageDTOPage = chatmessagePage.map(chatmessage -> {
-//            chatMessageParticipantService
+
+            List<ChatMessageParticipantDTO> chatMessageParticipantDTOs =
+                    chatMessageParticipantService.getByChatMessageId(chatmessage.getChatMessageId());
+
             ChatmessageDTO dto = new ChatmessageDTO();
             BeanUtils.copyProperties(chatmessage , dto);
+            dto.setChatMessageParticipantDTOs(chatMessageParticipantDTOs);
             return dto;
         });
 
