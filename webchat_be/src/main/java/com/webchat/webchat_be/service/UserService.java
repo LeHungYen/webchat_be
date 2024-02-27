@@ -75,11 +75,11 @@ public class UserService {
             return searchUsers;
         }
 
-        List<User> users = userRepository.findByEmailIgnoreCaseContainingOrFullNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(keySearch , keySearch , keySearch);
+        List<User> users = userRepository.findByEmailIgnoreCaseContainingOrFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(keySearch , keySearch , keySearch, keySearch);
 
         if(users.size() > 0){
             for ( User user: users) {
-                searchUsers.add(new SearchUser( user.getUserId() ,user.getProfilePicture() , user.getFullName() , user.getPhoneNumber() , user.getEmail() ,user.getUserReactions().size(), user.getFollowing().size() , user.getFollower().size()));
+                searchUsers.add(new SearchUser( user.getUserId() ,user.getProfilePicture() , user.getFirstName(), user.getLastName(), user.getPhoneNumber() , user.getEmail() ,user.getUserReactions().size(), user.getFollowing().size() , user.getFollower().size()));
             }
         }
         return searchUsers;
@@ -96,6 +96,14 @@ public class UserService {
         bean.setStatus(String.valueOf(UserStatus.OFFLINE));
         bean.setLastLogin(new Date());
         userRepository.save(bean);
+    }
+
+    public boolean checkGmailAlreadyExisted(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if(userOptional.isPresent()){
+            return true;
+        }
+        return false;
     }
 
 }

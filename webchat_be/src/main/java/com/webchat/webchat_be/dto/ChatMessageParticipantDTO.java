@@ -21,7 +21,9 @@ public class ChatMessageParticipantDTO implements Serializable {
 
 //    private int chatParticipantIdOfSender;
 
-    private String userParticipantName;
+    private String firstName;
+
+    private String lastName;
 
     private String userProfilePicture;
 

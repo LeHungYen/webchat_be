@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
     Optional<User> getUserByEmailAndPassword (String email , String password);
     Optional<User> findByEmail(String email);
 
-    List<User> findByEmailIgnoreCaseContainingOrFullNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(String email , String fullName , String phoneNumber);
+    List<User> findByEmailIgnoreCaseContainingOrFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(String email , String fristName , String lastName , String phoneNumber);
 
 
 }

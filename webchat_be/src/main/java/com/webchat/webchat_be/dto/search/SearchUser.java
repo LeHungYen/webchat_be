@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class SearchUser {
     private int userId;
     private String profilePicture;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String phoneNumber;
     private String email;
     private int likes;

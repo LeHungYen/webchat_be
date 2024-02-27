@@ -76,7 +76,8 @@ public class ChatMessageParticipantService {
                     ChatMessageParticipantDTO dto = new ChatMessageParticipantDTO();
                     BeanUtils.copyProperties(chatMessageParticipant, dto);
 
-                    dto.setUserParticipantName(chatMessageParticipant.getChatParticipant().getUser().getFullName());
+                    dto.setFirstName(chatMessageParticipant.getChatParticipant().getUser().getFirstName());
+                    dto.setLastName(chatMessageParticipant.getChatParticipant().getUser().getLastName());
                     dto.setUserProfilePicture(chatMessageParticipant.getChatParticipant().getUser().getProfilePicture());
 //                    dto.setChatParticipantIdOfSender(chatMessageParticipant.getChatmessage().getChatParticipantId());
                     return dto;
@@ -93,12 +94,19 @@ public class ChatMessageParticipantService {
             chatMessageParticipantRepository.saveAll(chatMessageParticipants);
     }
 
-    public void setLastViewedMessage(int chatParticipantId) {
+    public void setLastViewedMessage(int chatParticipantId , int chatId) {
         ChatMessageParticipant chatMessageParticipant =
                 chatMessageParticipantRepository.
                         getTopByChatParticipantIdOrderByChatMessageIdDesc(chatParticipantId);
-        chatMessageParticipant.setLastViewedAt(new Date());
-        chatMessageParticipantRepository.save(chatMessageParticipant);
+
+       if(chatMessageParticipant.getLastViewedAt() == null){
+           // clear last viewed message
+           setLastViewedMessageToNull(chatParticipantId , chatId);
+
+           // save viewd message
+           chatMessageParticipant.setLastViewedAt(new Date());
+           chatMessageParticipantRepository.save(chatMessageParticipant);
+       }
     }
 
     public ChatMessageParticipantDTO getById(Integer id) {

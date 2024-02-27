@@ -11,11 +11,11 @@ public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer userId;
 
-    private String username;
-
     private String email;
 
-    private String fullName;
+    private String firstName;
+
+    private String lastName;
 
     private Date birthdate;
 

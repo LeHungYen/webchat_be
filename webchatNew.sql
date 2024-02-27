@@ -2,10 +2,10 @@ create database my_webchat;
 use my_webchat;
 create table User(
 	userId int auto_increment not null primary key,
-    username nvarchar(255),
     passwordHash nvarchar(255),
     email nvarchar(255),
-    fullName nvarchar(255),
+    firstName nvarchar(255),
+	lastName nvarchar(255),
     birthdate date,
     gender nvarchar(255),
     profilePicture nvarchar(255),
@@ -231,10 +231,12 @@ CREATE TABLE ChatMessage (
 	FOREIGN KEY (replyToMessageId) REFERENCES ChatMessage(chatMessageId)
 );
 
+use my_webchat;
 CREATE TABLE ChatMessageParticipant (
     chatMessageParticipantId INT AUTO_INCREMENT PRIMARY KEY,
     chatMessageId INT NOT NULL,
     chatParticipantId INT NOT NULL,
+    lastViewedAt DATETIME, 
 	status VARCHAR(50),
     FOREIGN KEY (chatMessageId) REFERENCES ChatMessage(chatMessageId),
     FOREIGN KEY (chatParticipantId) REFERENCES ChatParticipant(chatParticipantId)

@@ -10,11 +10,11 @@ import java.sql.Date;
 public class UserDTOChatPage {
     private Integer userId;
 
-    private String username;
-
     private String email;
 
-    private String fullName;
+    private String firstName;
+
+    private String lastName;
 
     private Date birthdate;
 

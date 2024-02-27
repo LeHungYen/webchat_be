@@ -37,17 +37,17 @@ public class User implements Serializable , UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
 
-    @Column(name = "username")
-    private String username;
-
     @Column(name = "passwordHash")
     private String password;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "fullName")
-    private String fullName;
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "lastName")
+    private String lastName;
 
     @Column(name = "birthdate")
     private Date birthdate;
@@ -229,6 +229,11 @@ public class User implements Serializable , UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override

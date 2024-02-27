@@ -89,18 +89,18 @@ public class ChatmessageService {
         bean.setMediaType(String.valueOf(ChatMessageMediaType.IMAGE));
         bean.setMediaURL(saveFile(file));
         bean.setCreatedAt(new Date());
-//        bean.setStatus(String.valueOf(ChatMessageStatus.SENDED));   checkkkkkkkkkkkkkkkkkkk
         bean = chatmessageRepository.save(bean);
 
-        // send message to subcribers
-        simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+bean.getChatId() , bean);
+        // send chat history to subcribers
+        Page<ChatmessageDTO>  chatmessageDTOPage = findAllByChatId(chatId , chatParticipantId , 0);
+        simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+bean.getChatId() , chatmessageDTOPage);
 
         return null;
     }
 
     private String saveFile(MultipartFile file) throws IOException {
-//        String directoryPath = "/Users/lehungyen/Desktop/chatSphereFe/webchatFE/src/assets/imgs";
-        String directoryPath = "C:/Users/Loc/Desktop/socialsphere/src/assets/imgs";
+        String directoryPath = "/Users/lehungyen/Desktop/chatSphereFe/webchatFE/src/assets/imgs";
+//        String directoryPath = "C:/Users/Loc/Desktop/socialsphere/src/assets/imgs";
 
         // Create the directory if it doesn't exist
         File directory = new File(directoryPath);
@@ -175,10 +175,9 @@ public class ChatmessageService {
     }
 
     public Page<ChatmessageDTO> findAllByChatId (int chatId, int chatParticipantId , int pageNumber){
-        // set last viewed message to null
-        chatMessageParticipantService.setLastViewedMessageToNull(chatParticipantId , chatId);
+        // set last viewed message
 
-        chatMessageParticipantService.setLastViewedMessage(chatParticipantId);
+        chatMessageParticipantService.setLastViewedMessage(chatParticipantId , chatId);
 
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(pageNumber , 20 , sort);
