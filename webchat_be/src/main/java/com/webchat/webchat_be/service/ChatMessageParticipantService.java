@@ -94,7 +94,12 @@ public class ChatMessageParticipantService {
             chatMessageParticipantRepository.saveAll(chatMessageParticipants);
     }
 
-    public void setLastViewedMessage(int chatParticipantId , int chatId) {
+    public ChatMessageParticipant getLatestChatMessageParticipant (int chatParticipantId){
+        return    chatMessageParticipantRepository.
+                getTopByChatParticipantIdOrderByChatMessageIdDesc(chatParticipantId);
+    }
+
+    public boolean setLastViewedMessage(int chatParticipantId , int chatId) {
         ChatMessageParticipant chatMessageParticipant =
                 chatMessageParticipantRepository.
                         getTopByChatParticipantIdOrderByChatMessageIdDesc(chatParticipantId);
@@ -106,7 +111,9 @@ public class ChatMessageParticipantService {
            // save viewd message
            chatMessageParticipant.setLastViewedAt(new Date());
            chatMessageParticipantRepository.save(chatMessageParticipant);
+           return true;
        }
+       return false;
     }
 
     public ChatMessageParticipantDTO getById(Integer id) {

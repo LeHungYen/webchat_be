@@ -13,6 +13,8 @@ public class ChatQueryVO implements Serializable {
     private Integer chatId;
     private String type;
     private String name;
+    private String avatar;
+    private String emoji;
     private Date createdAt;
 
 

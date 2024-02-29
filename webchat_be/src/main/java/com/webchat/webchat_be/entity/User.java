@@ -1,17 +1,9 @@
 package com.webchat.webchat_be.entity;
 
 import com.webchat.webchat_be.enums.UserRole;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -70,6 +62,9 @@ public class User implements Serializable , UserDetails {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
+    @Column(name = "lastChatId" , nullable = true)
+    private Integer lastChatId;
+
     @Column(name = "lastLogin")
     private Date lastLogin;
 
@@ -82,6 +77,10 @@ public class User implements Serializable , UserDetails {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+
+    @ManyToOne
+    @JoinColumn(name = "lastChatId" , insertable = false , updatable = false)
+    private Chat chat;
 
     @OneToMany(mappedBy = "user")
     private List<ChatParticipant> chatParticipants;
@@ -97,9 +96,6 @@ public class User implements Serializable , UserDetails {
 
     @OneToMany(mappedBy = "receiverUser")
     private List<Friendrequest> receive;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Chatmessage> chatMessages;
 
     @OneToMany(mappedBy = "ratedUser")
     private List<Rating> rated;

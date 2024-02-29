@@ -7,6 +7,7 @@ import com.webchat.webchat_be.dto.FriendshipDTO;
 import com.webchat.webchat_be.dto.UserDTO;
 import com.webchat.webchat_be.dto.UserDTOChatPage;
 import com.webchat.webchat_be.entity.Chat;
+import com.webchat.webchat_be.entity.ChatMessageParticipant;
 import com.webchat.webchat_be.entity.ChatParticipant;
 import com.webchat.webchat_be.entity.User;
 import com.webchat.webchat_be.repository.ChatRepository;
@@ -31,6 +32,8 @@ public class ChatPageService {
     ChatmessageService chatmessageService;
     @Autowired
     FriendshipService friendshipService;
+    @Autowired
+    ChatMessageParticipantService chatMessageParticipantService;
 
     public Page<ChatPageDTO> getChatPage(int page){
         UserDTO currentUser = Utilities.getUserDTOFromContext();
@@ -59,14 +62,22 @@ public class ChatPageService {
                 return dto;
             }).toList();
 
+           // check already read all message
+            ChatMessageParticipant chatMessageParticipant =
+                    chatMessageParticipantService.getLatestChatMessageParticipant(chatParticipantDTO.getChatParticipantId());
+            boolean alreadyRead = chatMessageParticipant.getLastViewedAt() == null ? false : true;
+
             ChatPageDTO chatPageDTO = ChatPageDTO.builder()
                     .chatId(chat.getChatId())
                     .type(chat.getType())
                     .name(chat.getName())
+                    .avatar(chat.getAvatar())
+                    .emoji(chat.getEmoji())
                     .createdAt(chat.getCreatedAt())
                     .chatParticipantOfCurrentUser(chatParticipantDTO)
                     .chatParticipants(chatParticipantDTOList)
                     .latestChatMessage(chatmessageService.getLatestChatMessageByChatId(chat.getChatId()))
+                    .alreadyRead(alreadyRead)
                     .build();
             return chatPageDTO;
         });

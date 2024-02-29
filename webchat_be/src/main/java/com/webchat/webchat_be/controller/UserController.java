@@ -64,6 +64,11 @@ public class UserController {
         return userService.getById(id);
     }
 
+    @CrossOrigin
+    @PutMapping("/updateLastChatId/{userId}/{chatId}")
+    public UserDTO updateLastChatId( @NotNull @PathVariable("userId") int userId , @NotNull @PathVariable("chatId") int chatId) {
+         return userService.updateLastChatId(userId , chatId );
+    }
     @GetMapping
     public Page<UserDTO> query(@Valid UserQueryVO vO) {
         return userService.query(vO);

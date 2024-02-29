@@ -1,5 +1,15 @@
 create database my_webchat;
 use my_webchat;
+
+CREATE TABLE Chat (
+    chatId INT AUTO_INCREMENT PRIMARY KEY,
+	type varchar(50),
+    name nvarchar(255),
+    avatar nvarchar(255),
+    emoji nvarchar(255),
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 create table User(
 	userId int auto_increment not null primary key,
     passwordHash nvarchar(255),
@@ -13,10 +23,12 @@ create table User(
     bio nvarchar(255),
     website varchar(255),
     phoneNumber varchar(255),
+    lastChatId int,
     lastLogin datetime DEFAULT CURRENT_TIMESTAMP,
     registrationDate datetime DEFAULT CURRENT_TIMESTAMP,
     status nvarchar(255),
-    role nvarchar(255)
+    role nvarchar(255),
+	Foreign key (lastChatId) references Chat(chatId)
 );
 
 create table Post(
@@ -184,13 +196,8 @@ CREATE TABLE AdClick (
     FOREIGN KEY (adId) REFERENCES Advertisement(adId),
     FOREIGN KEY (userId) REFERENCES User(userId)
 );
+use my_webchat;
 
-CREATE TABLE Chat (
-    chatId INT AUTO_INCREMENT PRIMARY KEY,
-	type varchar(50),
-    name nvarchar(255),
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE ChatParticipant (
     chatParticipantId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -223,6 +230,7 @@ CREATE TABLE ChatMessage (
     chatId INT NOT NULL,
     chatParticipantId INT NOT NULL,
     content TEXT,
+        mediaType VARCHAR(50),
     mediaType VARCHAR(50),
     mediaURL Text,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -31,6 +31,8 @@ public class UserDTO implements Serializable {
 
     private String phoneNumber;
 
+    private Integer lastChatId;
+
     private java.util.Date lastLogin;
 
     private java.util.Date registrationDate;

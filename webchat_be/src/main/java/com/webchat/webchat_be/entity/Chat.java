@@ -37,6 +37,12 @@ public class Chat implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "avatar")
+    private String avatar;
+
+    @Column(name = "emoji")
+    private String emoji;
+
     @Column(name = "createdAt")
     private Date createdAt;
 
@@ -45,5 +51,8 @@ public class Chat implements Serializable {
 
     @OneToMany (mappedBy = "chat")
     private List<ChatParticipant> chatParticipants;
+
+    @OneToMany (mappedBy = "chat")
+    private List<User> users;
 
 }

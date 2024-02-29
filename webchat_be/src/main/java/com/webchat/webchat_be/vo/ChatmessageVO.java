@@ -24,6 +24,8 @@ public class ChatmessageVO implements Serializable {
 
     private String content;
 
+    private String type;
+
     private String mediaType;
 
     private String mediaURL;

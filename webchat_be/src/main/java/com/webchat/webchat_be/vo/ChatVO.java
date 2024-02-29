@@ -15,6 +15,10 @@ public class ChatVO implements Serializable {
     private Integer chatId;
     private String type;
     private String name;
+    private String avatar;
+    private String emoji;
     private Date createdAt;
+    private String updateType;
+    private int chatParticipantId;
 
 }

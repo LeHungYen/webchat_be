@@ -1,25 +1,20 @@
 package com.webchat.webchat_be.controller;
 
 import com.webchat.webchat_be.dto.ChatDTO;
+import com.webchat.webchat_be.dto.ChatmessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.webchat.webchat_be.service.ChatService;
 import com.webchat.webchat_be.vo.ChatQueryVO;
 import com.webchat.webchat_be.vo.ChatUpdateVO;
 import com.webchat.webchat_be.vo.ChatVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 @Validated
 @RestController
@@ -40,10 +35,20 @@ public class ChatController {
         chatService.delete(id);
     }
 
+    @CrossOrigin
     @PutMapping("/{id}")
     public void update(@Valid @NotNull @PathVariable("id") Integer id,
                        @Valid @RequestBody ChatUpdateVO vO) {
         chatService.update(id, vO);
+    }
+
+    @CrossOrigin
+    @PostMapping("/saveImg")
+    public ChatmessageDTO saveImg(
+            @RequestParam("chatId") int chatId ,
+            @RequestParam("chatParticipantId") int chatParticipantId,
+            @RequestParam("file") MultipartFile file) throws IOException {
+        return chatService.saveImg(chatId , chatParticipantId,file);
     }
 
     @GetMapping("/{id}")

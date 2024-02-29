@@ -32,6 +32,8 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.webchat.webchat_be.utilities.Utilities.saveFile;
+
 @Service
 public class ChatmessageService {
 
@@ -68,17 +70,13 @@ public class ChatmessageService {
             chatMessageParticipantRepository.save(chatMessageParticipant);
 
             // send message to chat paticipant
-            simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+ chatParticipant.getUserId() , bean);
+            if(chatParticipant.getChatParticipantId() == bean.getChatParticipantId())
+            simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+ chatParticipant.getUserId() , vO.getChatId());
         }
         return toDTO(bean);
     }
 
     public ChatmessageDTO saveImg(int chatId , int chatParticipantId , MultipartFile file) throws IOException {
-        // update chat paticipant before save message
-        ChatParticipant chatParticipant = chatParticipantRepository.findById(chatParticipantId)
-                .orElseThrow(() -> new NoSuchElementException("Resource not found: " + chatParticipantId));;
-        chatParticipant.setLastMessageSentAt(new Date());
-        chatParticipantRepository.save(chatParticipant);
 
         Chatmessage bean = new Chatmessage();
         bean.setChatMessageId(null);
@@ -91,49 +89,30 @@ public class ChatmessageService {
         bean.setCreatedAt(new Date());
         bean = chatmessageRepository.save(bean);
 
-        // send chat history to subcribers
-        Page<ChatmessageDTO>  chatmessageDTOPage = findAllByChatId(chatId , chatParticipantId , 0);
-        simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+bean.getChatId() , chatmessageDTOPage);
+        // update chat paticipant
+        List<ChatParticipant> chatParticipants = chatParticipantService.findByChatId(chatId);
+        for (ChatParticipant  chatParticipant: chatParticipants) {
+            chatParticipant.setLastMessageSentAt(new Date());
+            chatParticipantRepository.save(chatParticipant);
+
+            // create chat message participant
+            ChatMessageParticipant chatMessageParticipant = new ChatMessageParticipant();
+            chatMessageParticipant.setChatMessageId(bean.getChatMessageId());
+            chatMessageParticipant.setChatParticipantId(chatParticipant.getChatParticipantId());
+            chatMessageParticipant.setStatus(String.valueOf(ChatMessageParticipantStatus.RECEIVED));
+            chatMessageParticipantRepository.save(chatMessageParticipant);
+
+            // send message to chat paticipant
+            if(chatParticipant.getChatParticipantId() == bean.getChatParticipantId())
+                simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+ chatParticipant.getUserId() , bean.getChatId());
+        }
 
         return null;
     }
 
-    private String saveFile(MultipartFile file) throws IOException {
-        String directoryPath = "/Users/lehungyen/Desktop/chatSphereFe/webchatFE/src/assets/imgs";
-//        String directoryPath = "C:/Users/Loc/Desktop/socialsphere/src/assets/imgs";
 
-        // Create the directory if it doesn't exist
-        File directory = new File(directoryPath);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
 
-        // Normalize the file name
-        String originalFileName = file.getOriginalFilename();
-        String normalizedFileName = normalizeFileName(originalFileName);
 
-        // Save the file to the directory
-        String filePath = directoryPath + File.separator + normalizedFileName;
-        try (FileOutputStream fos = new FileOutputStream(filePath)) {
-            fos.write(file.getBytes());
-        }
-
-        return normalizedFileName;
-    }
-
-    private String normalizeFileName(String fileName) {
-        // Replace spaces with underscores
-        fileName = fileName.replaceAll("\\s+", "_");
-
-        // Remove non-alphanumeric characters
-        fileName = fileName.replaceAll("[^a-zA-Z0-9._]", "");
-
-        // Convert Vietnamese accented characters to their unaccented equivalents
-        fileName = java.text.Normalizer.normalize(fileName, java.text.Normalizer.Form.NFD)
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-
-        return fileName;
-    }
 
 
     public void delete(Integer id) {
@@ -177,7 +156,7 @@ public class ChatmessageService {
     public Page<ChatmessageDTO> findAllByChatId (int chatId, int chatParticipantId , int pageNumber){
         // set last viewed message
 
-        chatMessageParticipantService.setLastViewedMessage(chatParticipantId , chatId);
+        boolean isSetNewLastViewed = chatMessageParticipantService.setLastViewedMessage(chatParticipantId , chatId);
 
         Sort sort = Sort.by("createdAt").descending();
         Pageable pageable = PageRequest.of(pageNumber , 20 , sort);
@@ -190,9 +169,18 @@ public class ChatmessageService {
 
             ChatmessageDTO dto = new ChatmessageDTO();
             BeanUtils.copyProperties(chatmessage , dto);
+            dto.setLastName(chatmessage.getChatParticipant().getUser().getLastName());
             dto.setChatMessageParticipantDTOs(chatMessageParticipantDTOs);
             return dto;
         });
+
+        if(isSetNewLastViewed){
+            List<ChatParticipant> chatParticipants = chatParticipantService.findByChatId(chatId);
+            for (ChatParticipant  chatParticipant: chatParticipants) {
+//                if(chatParticipantId != chatParticipant.getChatParticipantId())
+                simpMessagingTemplate.convertAndSend("/topic/chatMessage/"+ chatParticipant.getUserId() , chatId);
+            }
+        }
 
         return chatmessageDTOPage;
     }

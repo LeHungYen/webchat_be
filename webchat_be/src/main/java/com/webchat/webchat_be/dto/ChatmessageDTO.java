@@ -19,6 +19,8 @@ public class ChatmessageDTO implements Serializable {
 
     private String content;
 
+    private String type;
+
     private String mediaType;
 
     private String mediaURL;
@@ -26,6 +28,8 @@ public class ChatmessageDTO implements Serializable {
     private Date createdAt;
 
     private String status;
+
+    private String lastName;
 
     private List<ChatMessageParticipantDTO> chatMessageParticipantDTOs;
 

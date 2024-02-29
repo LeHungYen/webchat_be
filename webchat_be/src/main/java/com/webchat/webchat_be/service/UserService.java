@@ -42,6 +42,11 @@ public class UserService {
         userRepository.save(bean);
     }
 
+    public UserDTO updateLastChatId(int userId, int chatId) {
+        userRepository.updateLastChatId(userId, chatId);
+        return getById(userId);
+    }
+
     public UserDTO getById(Integer id) {
         User original = requireOne(id);
         return toDTO(original);
@@ -57,8 +62,10 @@ public class UserService {
     }
 
     private UserDTO toDTO(User original) {
+        System.out.println(original.getLastChatId() + " asdasdasd sadsadasda user");
         UserDTO bean = new UserDTO();
         BeanUtils.copyProperties(original, bean);
+        System.out.println(bean.getLastChatId() + " asdasdasd sadsadasda dto");
         return bean;
     }
 
