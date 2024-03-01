@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Random;
 
 public class Utilities {
 
@@ -98,5 +99,11 @@ public class Utilities {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public static String generateRandomNumber() {
+        Random random = new Random();
+        int randomNumber = 100000 + random.nextInt(900000);
+        return String.valueOf(randomNumber);
     }
 }

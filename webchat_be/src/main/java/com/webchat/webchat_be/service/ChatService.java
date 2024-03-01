@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.webchat.webchat_be.utilities.Utilities.saveFile;
 
@@ -126,5 +127,11 @@ public class ChatService {
         chatmessageService.save(chatmessageVO);
 
         return null;
+    }
+
+    public ChatDTO getByType(Integer userId, Integer userId2, String type) {
+        Optional<Chat> chatOptional = chatRepository.findByTypeAndUserIds(type, userId, userId2);
+        Chat chat = chatOptional.orElseThrow(() -> new IllegalArgumentException("Chat not found"));
+        return toDTO(chat);
     }
 }

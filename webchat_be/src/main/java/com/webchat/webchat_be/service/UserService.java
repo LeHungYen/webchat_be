@@ -76,13 +76,16 @@ public class UserService {
 
 
     public List<SearchUser>  searchUserByKey(String keySearch) {
+        UserDTO userDTO = Utilities.getUserDTOFromContext();
         keySearch = keySearch.trim();
         List<SearchUser> searchUsers = new ArrayList<>();
         if(keySearch == "" || keySearch == null){
             return searchUsers;
         }
 
-        List<User> users = userRepository.findByEmailIgnoreCaseContainingOrFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(keySearch , keySearch , keySearch, keySearch);
+//        List<User> users = userRepository.findByEmailIgnoreCaseContainingOrFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContainingOrPhoneNumberIgnoreCaseContaining(keySearch , keySearch , keySearch, keySearch);
+
+        List<User> users = userRepository.findByEmailOrFullNameOrPhoneNumberAndExcludingUserId(keySearch , keySearch , keySearch, userDTO.getUserId());
 
         if(users.size() > 0){
             for ( User user: users) {
