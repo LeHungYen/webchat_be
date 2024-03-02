@@ -87,7 +87,7 @@ public class UserService {
 
         if(users.size() > 0){
             for ( User user: users) {
-                searchUsers.add(new SearchUser( user.getUserId() ,user.getProfilePicture() , user.getFirstName(), user.getLastName(), user.getPhoneNumber() , user.getEmail() ,user.getUserReactions().size(), user.getFollowing().size() , user.getFollower().size()));
+                searchUsers.add(new SearchUser( user.getUserId() ,user.getProfilePicture() , user.getFirstName(), user.getLastName(),user.getGender(), user.getPhoneNumber() , user.getEmail() ,user.getUserReactions().size(), user.getFollowing().size() , user.getFollower().size()));
             }
         }
         return searchUsers;

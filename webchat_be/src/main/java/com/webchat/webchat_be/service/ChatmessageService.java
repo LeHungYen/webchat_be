@@ -174,6 +174,7 @@ public class ChatmessageService {
             BeanUtils.copyProperties(chatmessage , dto);
             dto.setLastName(chatmessage.getChatParticipant().getUser().getLastName());
             dto.setUserId(chatmessage.getChatParticipant().getUser().getUserId());
+            dto.setGender(chatmessage.getChatParticipant().getUser().getGender());
             dto.setChatMessageParticipantDTOs(chatMessageParticipantDTOs);
             return dto;
         });

@@ -230,7 +230,7 @@ CREATE TABLE ChatMessage (
     chatId INT NOT NULL,
     chatParticipantId INT NOT NULL,
     content TEXT,
-        mediaType VARCHAR(50),
+	type VARCHAR(50),
     mediaType VARCHAR(50),
     mediaURL Text,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
