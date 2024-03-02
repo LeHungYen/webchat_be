@@ -20,6 +20,7 @@ public class ChatMessageParticipantDTO implements Serializable {
     private Date lastViewedAt;
 
 //    private int chatParticipantIdOfSender;
+    private int userId;
 
     private String firstName;
 

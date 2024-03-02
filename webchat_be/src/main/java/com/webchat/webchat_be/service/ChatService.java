@@ -1,6 +1,7 @@
 package com.webchat.webchat_be.service;
 
 import com.webchat.webchat_be.dto.ChatDTO;
+import com.webchat.webchat_be.dto.ChatDTOCreateNewChat;
 import com.webchat.webchat_be.dto.ChatmessageDTO;
 import com.webchat.webchat_be.entity.Chat;
 import com.webchat.webchat_be.entity.ChatMessageParticipant;
@@ -129,9 +130,19 @@ public class ChatService {
         return null;
     }
 
-    public ChatDTO getByType(Integer userId, Integer userId2, String type) {
-        Optional<Chat> chatOptional = chatRepository.findByTypeAndUserIds(type, userId, userId2);
+    public ChatDTOCreateNewChat getByType(Integer userId, Integer otherUserId, String type) {
+        Optional<Chat> chatOptional = chatRepository.findByTypeAndUserIds(type, userId, otherUserId);
         Chat chat = chatOptional.orElseThrow(() -> new IllegalArgumentException("Chat not found"));
-        return toDTO(chat);
+        ChatDTOCreateNewChat chatDTOCreateNewChat = new ChatDTOCreateNewChat();
+        BeanUtils.copyProperties(chat , chatDTOCreateNewChat);
+
+        for (ChatParticipant chatParticipant: chat.getChatParticipants()) {
+            if(chatParticipant.getUserId() == userId){
+                chatDTOCreateNewChat.setChatParticipantId(chatParticipant.getChatParticipantId());
+            }
+        }
+
+
+        return chatDTOCreateNewChat;
     }
 }

@@ -79,6 +79,7 @@ public class ChatMessageParticipantService {
                     dto.setFirstName(chatMessageParticipant.getChatParticipant().getUser().getFirstName());
                     dto.setLastName(chatMessageParticipant.getChatParticipant().getUser().getLastName());
                     dto.setUserProfilePicture(chatMessageParticipant.getChatParticipant().getUser().getProfilePicture());
+                    dto.setUserId(chatMessageParticipant.getChatParticipant().getUser().getUserId());
 //                    dto.setChatParticipantIdOfSender(chatMessageParticipant.getChatmessage().getChatParticipantId());
                     return dto;
                 }).collect(Collectors.toList());;

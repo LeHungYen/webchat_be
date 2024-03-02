@@ -1,6 +1,7 @@
 package com.webchat.webchat_be.controller;
 
 import com.webchat.webchat_be.dto.ChatDTO;
+import com.webchat.webchat_be.dto.ChatDTOCreateNewChat;
 import com.webchat.webchat_be.dto.ChatmessageDTO;
 import com.webchat.webchat_be.entity.Chat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,14 +58,15 @@ public class ChatController {
         return chatService.getById(id);
     }
 
-    @GetMapping("/getByType/{userId}/{userId2}/{type}")
-    public ChatDTO getByType(
+    @CrossOrigin
+    @GetMapping("/getByType/{userId}/{otherUserId}/{type}")
+    public ChatDTOCreateNewChat getByType(
             @PathVariable("userId") Integer userId,
-            @PathVariable("userId2") Integer userId2,
+            @PathVariable("otherUserId") Integer otherUserId,
             @PathVariable("type") String type
 
     ) {
-        return chatService.getByType(userId , userId2 , type);
+        return chatService.getByType(userId , otherUserId , type);
     }
 
 

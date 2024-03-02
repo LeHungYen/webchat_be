@@ -77,14 +77,12 @@ public class UserController {
     @MessageMapping("/connect")
 //    @SendTo("/topic/connect")
     public void connect(@Payload int userId) {
-        System.out.println(userId + " connected");
       userService.updateStatusOnline(userId);
     }
 
     @MessageMapping("/disconnect")
 //    @SendTo("/topic/disconnect")
     public void disconnect(@Payload int userId) {
-        System.out.println(userId + " disconnected");
         userService.updateStatusOffline(userId);
     }
 

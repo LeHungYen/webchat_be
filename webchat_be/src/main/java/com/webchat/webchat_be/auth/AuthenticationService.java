@@ -36,13 +36,23 @@ public class AuthenticationService {
     public void authenticationEmail(RegisterRequest request) throws JsonProcessingException {
         String key = Utilities.generateRandomNumber();
 
-        Utilities.sendMail(request.getEmail(),
-                "SS-"+key + " là mã xác nhận Social Sphere của bạn",
-                "Hi " + request.getLastName() + ",\n" +
-                        " \n" +
-                        "You need to confirm your Social Sphere account.\n" +
-                        " \n" +
-                        "Open Social Sphere and enter this code: " + key);
+        Thread emailThread = new Thread(() -> {
+            try {
+                Utilities.sendMail(request.getEmail(),
+                        "SS-"+key + " là mã xác nhận Social Sphere của bạn",
+                        "Hi " + request.getLastName() + ",\n" +
+                                " \n" +
+                                "You need to confirm your Social Sphere account.\n" +
+                                " \n" +
+                                "Open Social Sphere and enter this code: " + key);
+            } catch (Exception e) {
+                // Xử lý ngoại lệ nếu cần
+                e.printStackTrace();
+            }
+        });
+
+        // Bắt đầu thực thi luồng gửi email
+        emailThread.start();
 
 //        String json = objectMapper.writeValueAsString(request);
 //        redisTemplate.opsForValue().set(key, request);

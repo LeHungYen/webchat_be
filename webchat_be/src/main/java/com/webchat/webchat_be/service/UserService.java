@@ -62,10 +62,8 @@ public class UserService {
     }
 
     private UserDTO toDTO(User original) {
-        System.out.println(original.getLastChatId() + " asdasdasd sadsadasda user");
         UserDTO bean = new UserDTO();
         BeanUtils.copyProperties(original, bean);
-        System.out.println(bean.getLastChatId() + " asdasdasd sadsadasda dto");
         return bean;
     }
 

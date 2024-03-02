@@ -31,6 +31,8 @@ public class ChatmessageDTO implements Serializable {
 
     private String lastName;
 
+    private int userId;
+
     private List<ChatMessageParticipantDTO> chatMessageParticipantDTOs;
 
 }

@@ -148,7 +148,10 @@ public class ChatmessageService {
     public ChatmessageDTO getLatestChatMessageByChatId(int chatId) {
         Chatmessage chatmessage = chatmessageRepository.findTopByChatIdOrderByCreatedAtDesc(chatId);
         if(chatmessage != null){
-            return toDTO(chatmessage);
+            ChatmessageDTO dto = new ChatmessageDTO();
+            BeanUtils.copyProperties(chatmessage , dto);
+            dto.setLastName(chatmessage.getChatParticipant().getUser().getLastName());
+            return dto;
         }
         return new ChatmessageDTO();
     }
@@ -170,6 +173,7 @@ public class ChatmessageService {
             ChatmessageDTO dto = new ChatmessageDTO();
             BeanUtils.copyProperties(chatmessage , dto);
             dto.setLastName(chatmessage.getChatParticipant().getUser().getLastName());
+            dto.setUserId(chatmessage.getChatParticipant().getUser().getUserId());
             dto.setChatMessageParticipantDTOs(chatMessageParticipantDTOs);
             return dto;
         });
