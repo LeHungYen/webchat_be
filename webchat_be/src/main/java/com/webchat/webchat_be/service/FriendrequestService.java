@@ -72,7 +72,7 @@ public class FriendrequestService {
             notificationVO.setSenderId(vO.getSenderUserId());
             notificationVO.setReceiverId(vO.getReceiverUserId());
             notificationVO.setType(String.valueOf(NotificationType.SEND_FRIEND_REQUEST));
-            notificationVO.setLink("http://localhost:3000/userWall?id=" + vO.getSenderUserId());
+            notificationVO.setLink("localhost:3000/userWall?id=" + vO.getSenderUserId());
             notificationVO.setRead(false);
             notificationService.save(notificationVO);
 
@@ -88,7 +88,7 @@ public class FriendrequestService {
             notificationVO.setSenderId(vO.getReceiverUserId());
             notificationVO.setReceiverId(vO.getSenderUserId());
             notificationVO.setType(String.valueOf(NotificationType.SEND_FRIEND_REQUEST));
-            notificationVO.setLink("http://localhost:3000/userWall?id=" + vO.getReceiverUserId());
+            notificationVO.setLink("localhost:3000/userWall?id=" + vO.getReceiverUserId());
             notificationVO.setRead(false);
             notificationService.save(notificationVO);
         }else if(friendRequestStatus.equals(FriendRequestStatus.THE_RECEIVER_CANCELED)){

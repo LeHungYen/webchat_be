@@ -209,21 +209,6 @@ CREATE TABLE ChatParticipant (
     FOREIGN KEY (userId) REFERENCES User(userId)
 );
 
--- CREATE TABLE ChatMessage (
---     chatMessageId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
---     replyToMessageID int,
---     chatId INT NOT NULL,
---     senderUserId INT NOT NULL,
---     content TEXT,
---     mediaType VARCHAR(50),
---     mediaURL VARCHAR(255),
---     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
---     status VARCHAR(50),
---     FOREIGN KEY (chatId) REFERENCES Chat(chatId),
---     FOREIGN KEY (senderUserId) REFERENCES User(userId),
--- 	FOREIGN KEY (replyToMessageId) REFERENCES ChatMessage(chatMessageId)
--- );
-
 CREATE TABLE ChatMessage (
     chatMessageId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     replyToMessageID int,
@@ -426,14 +411,6 @@ CREATE TABLE UserSearchHistory (
     FOREIGN KEY (userId) REFERENCES User(userId)
 );
 
-CREATE TABLE UserWall (
-    wallId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    userId INT NOT NULL,
-    postId INT NOT NULL,
-    createdAt DATETIME,
-    FOREIGN KEY (userId) REFERENCES User(userId),
-    FOREIGN KEY (postId) REFERENCES Post(postId)
-);
 
 -- CREATE TABLE UserReaction (
 --      reactionID INT PRIMARY KEY,
