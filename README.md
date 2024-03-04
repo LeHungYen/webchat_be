@@ -8,3 +8,7 @@ Getting started for the first time clone project (contact me zalo 0775499998 if 
   + open webchat_be -> src -> main -> resource -> application.properties -> change username and sql password of u
 Reload dependencies
 Tab Maven (góc phải trên), clean -> compile -> install -> run
+
+--------------------------------------
+Current function:
+Register, log in, search for friends, make friends, follow, receive friend notifications, show friends who are online, offline, group chat, couple chat....
