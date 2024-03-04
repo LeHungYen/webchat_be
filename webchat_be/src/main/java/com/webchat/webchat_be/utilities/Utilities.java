@@ -42,8 +42,9 @@ public class Utilities {
         // loc
 //        String directoryPath = "C:/Users/Loc/Desktop/socialsphere/src/assets/imgs";
         // pc
-        String directoryPath = "C:/Users/yenbo/Desktop/socialsphere/webchat_fe/src/assets/imgs";
-
+//        String directoryPath = "C:/Users/yenbo/Desktop/socialsphere/webchat_fe/src/assets/imgs";
+        // vps
+        String directoryPath = "/home/project/fe/src/assets/imgs";
         // Create the directory if it doesn't exist
         File directory = new File(directoryPath);
         if (!directory.exists()) {
